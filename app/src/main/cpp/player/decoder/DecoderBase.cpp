@@ -99,8 +99,16 @@ int DecoderBase::InitFFDecoder() {
         //5.获取解码器参数
         AVCodecParameters *codecParameters = m_AVFormatContext->streams[m_StreamIndex]->codecpar;
 
-        //6.获取解码器
-        m_AVCodec = avcodec_find_decoder(codecParameters->codec_id);
+        if (codecParameters->codec_type == AVMEDIA_TYPE_VIDEO) {
+            m_AVCodec = avcodec_find_decoder_by_name("h264_mediacodec");
+
+            LOGCATI("视频 解码器-->%s:%s",m_AVCodec->name,m_AVCodec->long_name);
+        } else {
+
+            //6.获取解码器
+            m_AVCodec = avcodec_find_decoder(codecParameters->codec_id);
+        }
+
         if(m_AVCodec == nullptr) {
             LOGCATE("DecoderBase::InitFFDecoder avcodec_find_decoder fail.");
             break;

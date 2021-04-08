@@ -19,6 +19,7 @@ extern "C" {
 #include <libavfilter/version.h>
 #include <libswresample/version.h>
 #include <libswscale/version.h>
+#include <libavutil/avutil.h>
 };
 
 #ifdef __cplusplus
@@ -33,7 +34,9 @@ JNIEXPORT jstring JNICALL Java_com_byteflow_learnffmpeg_media_FFMediaPlayer_nati
         (JNIEnv *env, jclass cls)
 {
     char strBuffer[1024 * 4] = {0};
-    strcat(strBuffer, "libavcodec : ");
+    strcat(strBuffer, "FFmpeg version:");
+    strcat(strBuffer, av_version_info());
+    strcat(strBuffer, "\nlibavcodec : ");
     strcat(strBuffer, AV_STRINGIFY(LIBAVCODEC_VERSION));
     strcat(strBuffer, "\nlibavformat : ");
     strcat(strBuffer, AV_STRINGIFY(LIBAVFORMAT_VERSION));
@@ -63,6 +66,12 @@ JNIEXPORT jlong JNICALL Java_com_byteflow_learnffmpeg_media_FFMediaPlayer_native
 {
     const char* url = env->GetStringUTFChars(jurl, nullptr);
     FFMediaPlayer *player = new FFMediaPlayer();
+
+    JavaVM *vm;
+    env->GetJavaVM(&vm);
+
+    av_jni_set_java_vm(vm, 0);
+
     player->Init(env, obj, const_cast<char *>(url), renderType, surface);
     env->ReleaseStringUTFChars(jurl, url);
     return reinterpret_cast<jlong>(player);
