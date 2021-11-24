@@ -106,7 +106,7 @@ public:
 		free(pImage->ppPlane[0]);
 		pImage->ppPlane[0] = nullptr;
 		pImage->ppPlane[1] = nullptr;
-		pImage->ppPlane[1] = nullptr;
+		pImage->ppPlane[2] = nullptr;
 	}
 
 	static void CopyNativeImage(NativeImage *pSrcImg, NativeImage *pDstImg)
@@ -186,7 +186,7 @@ public:
 				}
 				else
 				{
-					memcpy(pDstImg->ppPlane[1], pSrcImg->ppPlane[1], pDstImg->pLineSize[1] * pSrcImg->height);
+					memcpy(pDstImg->ppPlane[1], pSrcImg->ppPlane[1], pDstImg->pLineSize[1] * pSrcImg->height / 2);
 				}
 			}
 				break;

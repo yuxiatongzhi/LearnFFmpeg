@@ -434,6 +434,10 @@ void GLCameraRender::OnDrawFrame() {
             glBindTexture(GL_TEXTURE_2D, m_ExtTextureId);
             GLUtils::setInt(m_FboProgramObj, "s_LutTexture", TEXTURE_NUM);
             break;
+        case SHADER_INDEX_NE:
+            offset = (sin(m_FrameIndex * MATH_PI / 60) + 1.0f) / 2.0f;
+            GLUtils::setFloat(m_FboProgramObj, "u_Offset", offset);
+            break;
         default:
             break;
     }
