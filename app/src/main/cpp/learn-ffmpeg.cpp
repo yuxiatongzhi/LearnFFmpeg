@@ -8,7 +8,7 @@
 
 #include <cstdio>
 #include <cstring>
-#include <FFMediaPlayer.h>
+#include <PlayerWrapper.h>
 #include <render/video/VideoGLRender.h>
 #include <render/video/VRGLRender.h>
 #include <render/audio/OpenSLRender.h>
@@ -71,17 +71,17 @@ JNIEXPORT jstring JNICALL Java_com_byteflow_learnffmpeg_media_FFMediaPlayer_nati
  * Signature: (JLjava/lang/String;Ljava/lang/Object;)J
  */
 JNIEXPORT jlong JNICALL Java_com_byteflow_learnffmpeg_media_FFMediaPlayer_native_1Init
-        (JNIEnv *env, jobject obj, jstring jurl, jint renderType, jobject surface)
+        (JNIEnv *env, jobject obj, jstring jurl, int playerType, jint renderType, jobject surface)
 {
     const char* url = env->GetStringUTFChars(jurl, nullptr);
-    FFMediaPlayer *player = new FFMediaPlayer();
+    PlayerWrapper *player = new PlayerWrapper();
 
     JavaVM *vm;
     env->GetJavaVM(&vm);
 
     av_jni_set_java_vm(vm, 0);
 
-    player->Init(env, obj, const_cast<char *>(url), renderType, surface);
+    player->Init(env, obj, const_cast<char *>(url), playerType, renderType, surface);
     env->ReleaseStringUTFChars(jurl, url);
     return reinterpret_cast<jlong>(player);
 }
@@ -96,8 +96,8 @@ JNIEXPORT void JNICALL Java_com_byteflow_learnffmpeg_media_FFMediaPlayer_native_
 {
     if(player_handle != 0)
     {
-        FFMediaPlayer *ffMediaPlayer = reinterpret_cast<FFMediaPlayer *>(player_handle);
-        ffMediaPlayer->Play();
+        PlayerWrapper *pPlayerWrapper = reinterpret_cast<PlayerWrapper *>(player_handle);
+        pPlayerWrapper->Play();
     }
 
 }
@@ -107,7 +107,7 @@ Java_com_byteflow_learnffmpeg_media_FFMediaPlayer_native_1SeekToPosition(JNIEnv 
                                                                       jlong player_handle, jfloat position) {
     if(player_handle != 0)
     {
-        FFMediaPlayer *ffMediaPlayer = reinterpret_cast<FFMediaPlayer *>(player_handle);
+        PlayerWrapper *ffMediaPlayer = reinterpret_cast<PlayerWrapper *>(player_handle);
         ffMediaPlayer->SeekToPosition(position);
     }
 }
@@ -119,10 +119,23 @@ Java_com_byteflow_learnffmpeg_media_FFMediaPlayer_native_1GetMediaParams(JNIEnv 
     long value = 0;
     if(player_handle != 0)
     {
-        FFMediaPlayer *ffMediaPlayer = reinterpret_cast<FFMediaPlayer *>(player_handle);
+        PlayerWrapper *ffMediaPlayer = reinterpret_cast<PlayerWrapper *>(player_handle);
         value = ffMediaPlayer->GetMediaParams(param_type);
     }
     return value;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_byteflow_learnffmpeg_media_FFMediaPlayer_native_1SetMediaParams(JNIEnv *env, jobject thiz,
+                                                                         jlong player_handle,
+                                                                         jint param_type,
+                                                                         jobject param) {
+    if(player_handle != 0)
+    {
+        PlayerWrapper *ffMediaPlayer = reinterpret_cast<PlayerWrapper *>(player_handle);
+        ffMediaPlayer->SetMediaParams(param_type, param);
+    }
 }
 
 /*
@@ -135,7 +148,7 @@ JNIEXPORT void JNICALL Java_com_byteflow_learnffmpeg_media_FFMediaPlayer_native_
 {
     if(player_handle != 0)
     {
-        FFMediaPlayer *ffMediaPlayer = reinterpret_cast<FFMediaPlayer *>(player_handle);
+        PlayerWrapper *ffMediaPlayer = reinterpret_cast<PlayerWrapper *>(player_handle);
         ffMediaPlayer->Pause();
     }
 }
@@ -150,7 +163,7 @@ JNIEXPORT void JNICALL Java_com_byteflow_learnffmpeg_media_FFMediaPlayer_native_
 {
     if(player_handle != 0)
     {
-        FFMediaPlayer *ffMediaPlayer = reinterpret_cast<FFMediaPlayer *>(player_handle);
+        PlayerWrapper *ffMediaPlayer = reinterpret_cast<PlayerWrapper *>(player_handle);
         ffMediaPlayer->Stop();
     }
 }
@@ -165,8 +178,9 @@ JNIEXPORT void JNICALL Java_com_byteflow_learnffmpeg_media_FFMediaPlayer_native_
 {
     if(player_handle != 0)
     {
-        FFMediaPlayer *ffMediaPlayer = reinterpret_cast<FFMediaPlayer *>(player_handle);
+        PlayerWrapper *ffMediaPlayer = reinterpret_cast<PlayerWrapper *>(player_handle);
         ffMediaPlayer->UnInit();
+        delete ffMediaPlayer;
     }
 }
 
