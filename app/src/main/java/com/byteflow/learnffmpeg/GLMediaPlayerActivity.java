@@ -13,23 +13,19 @@ import android.content.pm.PackageManager;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import com.byteflow.learnffmpeg.media.FFMediaPlayer;
 import com.byteflow.learnffmpeg.media.MyGLSurfaceView;
-import com.byteflow.learnffmpeg.util.CommonUtils;
-
-import java.util.logging.LogManager;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import static com.byteflow.learnffmpeg.media.FFMediaPlayer.MEDIA_PARAM_VIDEO_DURATION;
 import static com.byteflow.learnffmpeg.media.FFMediaPlayer.MEDIA_PARAM_VIDEO_HEIGHT;
@@ -52,7 +48,9 @@ public class GLMediaPlayerActivity extends AppCompatActivity implements GLSurfac
     private FFMediaPlayer mMediaPlayer = null;
     private SeekBar mSeekBar = null;
     private boolean mIsTouch = false;
-    private String mVideoPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/byteflow/one_piece.mp4";
+//    private String mVideoPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/byteflow/one_piece.mp4";
+    private String mVideoPath = "/sdcard/ts/mp4/清平乐_1080P.mp4";;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
